@@ -1,4 +1,4 @@
-name: AWS CLI example
+name: conchayoro-pipeline
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: deploy
-        path: README.md
+        path: index.html
 
   deploy:
     runs-on: ubuntu-latest
@@ -23,9 +23,10 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
       AWS_EC2_METADATA_DISABLED: true
+      BUCKET: ${{ vars.BUCKET }}
     steps:
     - uses: actions/download-artifact@v2
       with:
         name: deploy
-        path: README.md
-    - run: aws s3 cp README.md s3://devops-cyo --recursive --acl public-read
+        path: index.html
+    - run: aws s3 cp index.html s3://$BUCKET --recursive --acl public-read
